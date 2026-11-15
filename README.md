@@ -9,7 +9,7 @@ DeepSeek Harness 的 Caddy 账号密码入口。浏览器弹出原生账号密�
 使用 Node.js 24 环境执行下面的命令。
 
 ```sh
-dsh plugin --profile web add https://github.com/yangquan0310/dsh-caddy-login/releases/download/v0.1.1/dsh-caddy-login-0.1.1.tgz
+dsh plugin --profile web add https://github.com/yangquan0310/dsh-caddy-login/releases/download/v0.1.2/dsh-caddy-login-0.1.2.tgz
 ```
 
 安装包自动添加插件条目。首次安装时 username 为空，填写配置后启用。
