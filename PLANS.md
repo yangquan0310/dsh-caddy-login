@@ -29,3 +29,5 @@
 - 锁使用 Node 24 内置 SQLite 的 BEGIN EXCLUSIVE，进程结束由操作系统释放，无额外运行依赖。
 - 已执行真实 Caddy 2.11.9 测试，包含根路径和前缀路径、正确及错误密码、原生会话交换、Cookie 失效恢复和 WebSocket。
 - 服务器读取确认 DSH 服务使用 Node 24、127.0.0.1:3080 和既有 HTTPS 19857 路径，Caddy 用户组为 caddy。DSH_CADDY_PASSWORD 尚未设置，密码由用户亲自输入。
+
+- v0.1.0 已公开发布并通过 dsh plugin --profile web add 安装成功。首次启用发现 DSH 禁止 .env 使用 DSH_ 前缀，已备份凭据并恢复服务。用户同意改用 CADDY_LOGIN_PASSWORD，v0.1.1 修正默认引用和说明，20 项测试通过。

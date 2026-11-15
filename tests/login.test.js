@@ -7,12 +7,12 @@ function fixture() {
   let token = 'first-token';
   const writes = [];
   const services = {
-    credentials: { resolve: async ref => { assert.equal(ref, 'DSH_CADDY_PASSWORD'); return secret ? { value: secret, source: 'user-env' } : undefined; } },
+    credentials: { resolve: async ref => { assert.equal(ref, 'CADDY_LOGIN_PASSWORD'); return secret ? { value: secret, source: 'user-env' } : undefined; } },
     authenticatedUrl: root => root + '?token=' + token,
     hash: async password => 'hashed-' + password,
     manager: { update: async value => writes.push(value), restore: async () => writes.push('restore') },
   };
-  const options = { username: 'yangquan0310', password: 'DSH_CADDY_PASSWORD', publicUrl: 'https://example.test/gui/', upstream: 'http://127.0.0.1:3080', refreshIntervalMs: 60_000 };
+  const options = { username: 'yangquan0310', password: 'CADDY_LOGIN_PASSWORD', publicUrl: 'https://example.test/gui/', upstream: 'http://127.0.0.1:3080', refreshIntervalMs: 60_000 };
   return { services, options, writes, setSecret: value => { secret = value; }, setToken: value => { token = value; } };
 }
 

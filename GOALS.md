@@ -5,7 +5,7 @@
 ## 输入和决定
 
 - 适配 @deepseek-ai/dsh 0.2.2-rc.1、Node 24、Ubuntu、Caddy 2.11.4。
-- cordis.patch.yml 中使用 username: yangquan0310、password: DSH_CADDY_PASSWORD。
+- cordis.patch.yml 中使用 username: yangquan0310、password: CADDY_LOGIN_PASSWORD。
 - DSH Credentials 服务解析 password 指定的凭据。密码来源为 ~/.dsh/.env。
 - Caddy 负责账号密码认证，插件负责服务器侧 DSH 令牌交换和配置生命周期。
 - 保留现有 HTTPS 19857 入口和路径，DSH 继续绑定 127.0.0.1:3080。

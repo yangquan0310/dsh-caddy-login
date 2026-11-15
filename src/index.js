@@ -7,7 +7,7 @@ export const name = 'dsh-caddy-login';
 export const inject = ['credentials', 'connection', 'webServer', 'webApp'];
 export const Config = Schema.object({
   username: Schema.string().default(''),
-  password: Schema.string().default('DSH_CADDY_PASSWORD'),
+  password: Schema.string().default('CADDY_LOGIN_PASSWORD'),
   publicUrl: Schema.string(),
   caddyfile: Schema.string().default('/etc/caddy/Caddyfile'),
   stateDirectory: Schema.string().default('/var/lib/dsh-caddy-login'),
