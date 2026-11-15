@@ -56,15 +56,15 @@ export function restoreSite(main, originalSite, block) {
   return main.replace(block, originalSite);
 }
 
-export function createSite({ publicUrl, upstream, username, passwordHash, token, originalSite = '' }) {
+export function createSite({ publicUrl, upstream, username, passwordHash, token, originalSite = '', unavailable = false }) {
   const url = new URL(publicUrl);
   const backend = new URL(upstream);
   if (url.protocol !== 'https:' || url.username || url.password || url.search || url.hash || !/^\/[A-Za-z0-9_/-]*\/$|^\/$/.test(url.pathname)) {
     throw new Error('publicUrl must be a clean HTTPS root or directory URL');
   }
   if (!/^[A-Za-z0-9._-]{1,64}$/.test(username)) throw new Error('Invalid login username');
-  if (!/^\$2[aby]\$\d\d\$[./A-Za-z0-9]{53}$/.test(passwordHash)) throw new Error('Invalid bcrypt password hash');
-  if (!/^[A-Za-z0-9_-]{1,1024}$/.test(token)) throw new Error('Invalid process token');
+  if (!unavailable && !/^\$2[aby]\$\d\d\$[./A-Za-z0-9]{53}$/.test(passwordHash)) throw new Error('Invalid bcrypt password hash');
+  if (!unavailable && !/^[A-Za-z0-9_-]{1,1024}$/.test(token)) throw new Error('Invalid process token');
   if (!['http:', 'https:'].includes(backend.protocol) || !['127.0.0.1', '[::1]', 'localhost'].includes(backend.hostname) || backend.username || backend.password || backend.pathname !== '/' || backend.search || backend.hash) {
     throw new Error('DSH upstream must be a loopback origin');
   }
@@ -77,10 +77,11 @@ export function createSite({ publicUrl, upstream, username, passwordHash, token,
     // Existing sites with single-line TLS certificate directives also work.
     if (!tls) tls = body.split('\n').find(line => /^\s*tls\s+[^\s{]/.test(line)) ?? '';
   }
+  if (unavailable) return `${url.origin} {\n${tls}\n respond "Login credential unavailable" 503\n}\n`;
   const prefix = url.pathname;
   const mount = prefix === '/' ? '/' : prefix.slice(0, -1);
-  const proxy = `reverse_proxy ${backend.origin} {\n    header_up -Authorization\n    header_down Set-Cookie "Path=/" ${JSON.stringify(`Path=${prefix}; Secure`)}\n    header_down Location "^(\\\\./|/)$" ${JSON.stringify(prefix)}\n`;
+  const proxy = `reverse_proxy ${backend.origin} {\n    header_up -Authorization\n    header_down Set-Cookie "Path=/" ${JSON.stringify(`Path=${prefix}; Secure`)}\n    header_down Location "^([.]/|/)$" ${JSON.stringify(prefix)}\n`;
   const unmounted = prefix === '/' ? 'handle' : `handle_path ${prefix}*`;
   const redirects = prefix === '/' ? '' : `redir / ${prefix} 302\n  redir ${mount} ${prefix} 308\n`;
-  return `${url.origin} {\n${tls}\n route {\n  basic_auth {\n   ${username} ${passwordHash}\n  }\n  ${redirects}  ${unmounted} {\n   @bootstrap path /_dsh_caddy_login\n   handle @bootstrap {\n    rewrite * /?token=${token}\n    ${proxy}   }\n   }\n   @document path / /index.html\n   handle @document {\n    ${proxy}    @unauthorized status 401\n    handle_response @unauthorized {\n     redir ${prefix}_dsh_caddy_login 303\n    }\n    }\n   }\n   handle {\n    ${proxy}   }\n   }\n  }\n  handle {\n   respond "Not Found" 404\n  }\n }\n}\n`;
+  return `${url.origin} {\n${tls}\n route {\n  basic_auth {\n   ${username} ${passwordHash}\n  }\n  ${redirects}  ${unmounted} {\n   @bootstrap path /_dsh_caddy_login\n   handle @bootstrap {\n    rewrite * /?token=${token}\n    ${proxy}   }\n   }\n   @document path / /index.html\n   handle @document {\n    ${proxy}    @unauthorized status 401\n    handle_response @unauthorized {\n     redir * ${prefix}_dsh_caddy_login 303\n    }\n    }\n   }\n   handle {\n    ${proxy}   }\n   }\n  }\n  handle {\n   respond "Not Found" 404\n  }\n }\n}\n`;
 }
