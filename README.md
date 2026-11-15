@@ -9,7 +9,7 @@ DeepSeek Harness 的 Caddy 账号密码入口。浏览器弹出原生账号密�
 使用 Node.js 24 环境执行下面的命令。
 
 ```sh
-dsh plugin --profile web add https://github.com/yangquan0310/dsh-caddy-login/releases/download/v0.1.0/dsh-caddy-login-0.1.0.tgz
+dsh plugin --profile web add https://github.com/yangquan0310/dsh-caddy-login/releases/download/v0.1.1/dsh-caddy-login-0.1.1.tgz
 ```
 
 安装包自动添加插件条目。首次安装时 username 为空，填写配置后启用。
@@ -20,13 +20,13 @@ dsh plugin --profile web add https://github.com/yangquan0310/dsh-caddy-login/rel
 - id: dsh-caddy-login
   config:
     username: yangquan0310
-    password: DSH_CADDY_PASSWORD
+    password: CADDY_LOGIN_PASSWORD
 ```
 
 在 ~/.dsh/.env 中设置凭据。
 
 ```dotenv
-DSH_CADDY_PASSWORD=替换为实际密码
+CADDY_LOGIN_PASSWORD=替换为实际密码
 ```
 
 password 是 DSH Credentials 凭据名称。插件通过 credentials.resolve() 读取，由 dsh-credentials-local 提供 .env 凭据。支持单行密码，修改凭据后最长约 15 秒更新。运行期间删除凭据会将该站点切换为 HTTP 503，恢复凭据后重新启用。
