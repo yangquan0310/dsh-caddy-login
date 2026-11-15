@@ -28,12 +28,12 @@ export function runCommand(command, args, input) {
   });
 }
 
-export async function hashPassword(password, binary = 'caddy') {
+export async function hashPassword(password, binary = 'caddy', run = runCommand) {
   if (typeof password !== 'string' || password.length === 0 || /[\r\n\0]/.test(password)) {
     throw new Error('Login password must be a nonempty, single-line credential');
   }
   // Standard input avoids credentials appearing in the process command line.
-  const hash = await runCommand(binary, ['hash-password'], password);
+  const hash = await run(binary, ['hash-password'], password + '\n');
   if (!/^\$2[aby]\$\d\d\$[./A-Za-z0-9]{53}$/.test(hash)) throw new Error('Caddy returned an invalid password hash');
   return hash;
 }

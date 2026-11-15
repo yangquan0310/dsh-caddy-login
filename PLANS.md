@@ -31,3 +31,5 @@
 - 服务器读取确认 DSH 服务使用 Node 24、127.0.0.1:3080 和既有 HTTPS 19857 路径，Caddy 用户组为 caddy。DSH_CADDY_PASSWORD 尚未设置，密码由用户亲自输入。
 
 - v0.1.0 已公开发布并通过 dsh plugin --profile web add 安装成功。首次启用发现 DSH 禁止 .env 使用 DSH_ 前缀，已备份凭据并恢复服务。用户同意改用 CADDY_LOGIN_PASSWORD，v0.1.1 修正默认引用和说明，20 项测试通过。
+
+- v0.1.1 已经通过 GitHub codeload 链接由 dsh plugin 安装，实际耗时 3m21s。用户要求继续重试 GitHub 下载，停止本地分片上传方案，分片未参与安装。启用时发现 Caddy 2.11.4 密码 stdin 必须有换行，增加回归测试并修复，21 项通过，服务器 fixture 命令验证通过，发布 v0.1.2。
