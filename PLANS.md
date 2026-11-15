@@ -5,10 +5,10 @@
 
 | 任务 | 前置条件 | 交付与验收 | 状态 |
 |---|---|---|---|
-| T1 接口与配置事务 | 用户确认设计 | 核对已发布 0.2.2-rc.1，先写失败测试，再实现配置生成、校验、回滚和所有权检测 | 进行中 |
-| T2 插件生命周期 | T1 验收 | 真实 Credentials 接口与启动事件、串行更新及释放测试 | 未启动 |
-| T3 可安装包 | T2 验收 | package.json、bundle patch、README，完整测试及 npm pack 验收 | 未启动 |
-| T4 独立核查与交付 | T3 验收 | 安全与恢复流程独立核查、返工及最终校验值 | 未启动 |
+| T1 接口与配置事务 | 用户确认设计 | 配置生成、校验、回滚、所有权、外部修改与跨进程锁测试通过 | 已验收 |
+| T2 插件生命周期 | T1 验收 | 凭据解析、令牌刷新、缺失凭据及释放竞争测试通过 | 已验收 |
+| T3 可安装包 | T2 验收 | bundle patch、README、npm pack 已生成，等待服务器安装验收 | 进行中 |
+| T4 独立核查与交付 | T3 验收 | 独立核查及返工复核通过，等待发布与生产验收 | 待核查 |
 
 ## 执行步骤
 
@@ -23,3 +23,9 @@
 - 2026-11-15 用户指定项目目录 C:/Users/yangq/OneDrive/Documents/PluginDevelopment/dsh-caddy-login，项目文档已迁移。
 - 已核对 npm 发布的 0.2.2-rc.1。采用 connection.authenticatedUrl()、webApp.getAdvertisedUrl()、credentials.resolve()。当前主分支的 webserver/entry-url 事件不适用于本次版本。
 - 规划按项目现有文档要求合并登记在本文件，执行由当前代理持续推进，最终交独立代理核查。
+- 用户确认公开发布到 yangquan0310/dsh-caddy-login，并通过 dsh 插件命令安装。
+- 基线提交 2eb1366，任务分支 task/caddy-login，修改分支 feat/password-login，目录 .worktree/password-login。工作树工具请求未完成，核对无新增工作树后使用 git worktree add 创建。
+- 独立核查人 review_caddy_login 发现候选校验期间外部修改覆盖、空锁恢复及并发接管锁竞态。先补充失败测试，修复后由同一核查人复核通过。
+- 锁使用 Node 24 内置 SQLite 的 BEGIN EXCLUSIVE，进程结束由操作系统释放，无额外运行依赖。
+- 已执行真实 Caddy 2.11.9 测试，包含根路径和前缀路径、正确及错误密码、原生会话交换、Cookie 失效恢复和 WebSocket。
+- 服务器读取确认 DSH 服务使用 Node 24、127.0.0.1:3080 和既有 HTTPS 19857 路径，Caddy 用户组为 caddy。DSH_CADDY_PASSWORD 尚未设置，密码由用户亲自输入。
